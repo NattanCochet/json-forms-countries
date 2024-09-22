@@ -1,0 +1,27 @@
+{
+  "name": "cyberun-forms",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@jsonforms/core": "^3.4.0-beta.0",
+    "@jsonforms/material-renderers": "^3.4.0-beta.0",
+    "@jsonforms/react": "^3.4.0-beta.0",
+    "next": "14.2.13",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.13",
+    "typescript": "^5"
+  }
+}
