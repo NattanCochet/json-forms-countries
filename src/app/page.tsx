@@ -1,9 +1,9 @@
 "use client"; //next n'autorise pas useeffect/usestate sans ce mot clé
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { JsonForms } from '@jsonforms/react';
-import { materialRenderers } from '@jsonforms/material-renderers';
-import { materialCells } from '@jsonforms/material-renderers';
+import React, { useState, useEffect, useCallback } from "react";
+import { JsonForms } from "@jsonforms/react";
+import { materialRenderers } from "@jsonforms/material-renderers";
+import { materialCells } from "@jsonforms/material-renderers";
 
 interface BaseValues {
   [key: string]: number;
@@ -16,19 +16,25 @@ interface InfoPays {
 
 const Home = () => {
   const [baseValues, setBaseValues] = useState<BaseValues>({
-    "France": 0,
-    "Allemagne": 0,
-    "Belgique": 0,
-    "Inconnu": 0
+    France: 0,
+    Allemagne: 0,
+    Belgique: 0,
+    Inconnu: 0,
   });
 
   const getPercentages = useCallback((baseValues: BaseValues) => {
-    const total = Object.values(baseValues).reduce((acc, value) => acc + value, 0);
+    const total = Object.values(baseValues).reduce(
+      (acc, value) => acc + value,
+      0
+    );
     if (total === 0) {
       return baseValues;
     } else {
       return Object.fromEntries(
-        Object.entries(baseValues).map(([country, value]) => [country, Number(((value / total) * 100).toFixed(2))])
+        Object.entries(baseValues).map(([country, value]) => [
+          country,
+          Number(((value / total) * 100).toFixed(2)),
+        ])
       );
     }
   }, []);
@@ -44,18 +50,18 @@ const Home = () => {
           properties: {
             Liste_pays_iconnu_compris: {
               type: "string",
-              enum: ['France', 'Allemagne', 'Belgique', 'Inconnu'],
+              enum: ["France", "Allemagne", "Belgique", "Inconnu"],
             },
             pourcentPays: {
               type: "number",
               readOnly: true,
-            }
+            },
           },
-          required: ["Liste_pays_iconnu_compris"]
-        }
-      }
+          required: ["Liste_pays_iconnu_compris"],
+        },
+      },
     },
-    required: ["nom", "Pays"]
+    required: ["nom", "Pays"],
   };
 
   const uischema = {
@@ -63,7 +69,7 @@ const Home = () => {
     elements: [
       {
         type: "Control",
-        scope: "#/properties/nom"
+        scope: "#/properties/nom",
       },
       {
         type: "Control",
@@ -79,28 +85,32 @@ const Home = () => {
                 type: "Control",
                 scope: "#/properties/pourcentPays",
                 options: {
-                  readOnly: true
-                }
-              }
-            ]
-          }
-        }
-      }
-    ]
+                  readOnly: true,
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
   };
 
   const [data, setData] = useState<{
     Pays: InfoPays[];
   }>({
-    Pays: [{ Liste_pays_iconnu_compris: "France", pourcentPays: 0 }]
+    Pays: [{ Liste_pays_iconnu_compris: "France", pourcentPays: 0 }],
   });
 
   const [previousCountries, setPreviousCountries] = useState<string[]>([]);
 
   useEffect(() => {
-    const currentCountries = data.Pays.map((item: InfoPays) => item.Liste_pays_iconnu_compris);
+    const currentCountries = data.Pays.map(
+      (item: InfoPays) => item.Liste_pays_iconnu_compris
+    );
 
-    if (JSON.stringify(previousCountries) !== JSON.stringify(currentCountries)) {
+    if (
+      JSON.stringify(previousCountries) !== JSON.stringify(currentCountries)
+    ) {
       const newBaseValues = { ...baseValues };
 
       currentCountries.forEach((country) => {
@@ -111,7 +121,10 @@ const Home = () => {
 
       previousCountries.forEach((country) => {
         if (!currentCountries.includes(country)) {
-          newBaseValues[country] = Math.max((newBaseValues[country] || 0) - 1, 0);
+          newBaseValues[country] = Math.max(
+            (newBaseValues[country] || 0) - 1,
+            0
+          );
         }
       });
 
@@ -120,12 +133,13 @@ const Home = () => {
 
       const updatedPays = data.Pays.map((item: InfoPays) => ({
         ...item,
-        pourcentPays: getPercentages(newBaseValues)[item.Liste_pays_iconnu_compris] || 0
+        pourcentPays:
+          getPercentages(newBaseValues)[item.Liste_pays_iconnu_compris] || 0,
       }));
 
       setData((prevData) => ({
         ...prevData,
-        Pays: updatedPays
+        Pays: updatedPays,
       }));
     }
   }, [data.Pays, baseValues, previousCountries, getPercentages]);
@@ -135,7 +149,7 @@ const Home = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: "20px" }}>
       <JsonForms
         schema={schema}
         uischema={uischema}
@@ -145,8 +159,10 @@ const Home = () => {
         cells={materialCells}
       />
 
-      <pre style={{ paddingTop: '2em' }}>{JSON.stringify(data, null, 2)}</pre>
-      <pre style={{ paddingTop: '2em' }}>Base Values: {JSON.stringify(baseValues, null, 2)}</pre>
+      <pre style={{ paddingTop: "2em" }}>{JSON.stringify(data, null, 2)}</pre>
+      <pre style={{ paddingTop: "2em" }}>
+        Base Values: {JSON.stringify(baseValues, null, 2)}
+      </pre>
     </div>
   );
 };
